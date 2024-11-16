@@ -5,7 +5,7 @@ mod schedule;
 mod transcript;
 
 pub mod client;
-pub use transcript::Transcript;
+pub use transcript::{MergeStrategy, Transcript};
 
 #[macro_export]
 macro_rules! selector {

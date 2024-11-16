@@ -9,11 +9,27 @@ use crate::selector;
 const TRANSCRIPT_PAGE_URL: &str =
     "https://hac.friscoisd.org/HomeAccess/Content/Student/Transcript.aspx";
 
-/// The list of grade entries, along with the cumulative GPA.
+/// The list of grade entries.
 #[derive(Debug, Clone, PartialEq)]
 pub struct Transcript {
     /// All entries present.
     pub entries: Vec<TranscriptEntry>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct TranscriptEntry {
+    pub weightage: f32,
+    pub grade: f32,
+    pub name: String,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum MergeStrategy {
+    /// Transcript entries of the same name are combined into one transcript entry with the
+    /// mean of the grades.
+    Average,
+    /// Transcript entries of the same name are left as seperate entries.
+    Seperate,
 }
 
 impl Transcript {
@@ -23,11 +39,20 @@ impl Transcript {
         sum / self.entries.len() as f32
     }
 
-    pub fn combine(transcripts: &[Transcript]) -> Transcript {
+    pub fn combine(transcripts: &[Transcript], strategy: MergeStrategy) -> Transcript {
         let entries = transcripts
             .iter()
             .flat_map(|transcript| transcript.entries.iter());
 
+        match strategy {
+            MergeStrategy::Average => Self::merge_average(entries),
+            MergeStrategy::Seperate => Self {
+                entries: entries.cloned().collect(),
+            },
+        }
+    }
+
+    fn merge_average<'a>(entries: impl Iterator<Item = &'a TranscriptEntry>) -> Self {
         // if we find duplicates, keep their average
         let mut seen: HashMap<String, Vec<TranscriptEntry>> = HashMap::new();
 
@@ -52,13 +77,6 @@ impl Transcript {
 
         Self { entries }
     }
-}
-
-#[derive(Debug, Clone, PartialEq)]
-pub struct TranscriptEntry {
-    pub weightage: f32,
-    pub grade: f32,
-    pub name: String,
 }
 
 impl TranscriptEntry {

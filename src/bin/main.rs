@@ -1,5 +1,5 @@
 use anyhow::Result;
-use hac::{client::Client, Transcript};
+use hac::{client::Client, MergeStrategy, Transcript};
 
 fn print_schedule(client: &Client) -> Result<()> {
     println!("Currently enrolled courses: ");
@@ -43,7 +43,7 @@ fn print_cumulative_gpa(client: &Client) -> Result<()> {
         transcripts.push(quarter_grades);
     }
 
-    let cumulative_transcript = Transcript::combine(&transcripts);
+    let cumulative_transcript = Transcript::combine(&transcripts, MergeStrategy::Seperate);
 
     println!(
         "Cumulative GPA with {} total entries: {}",
@@ -55,7 +55,7 @@ fn print_cumulative_gpa(client: &Client) -> Result<()> {
 }
 
 fn main() -> Result<()> {
-    let client = Client::new("no", "dox pls").expect("could not authenticate with hac");
+    let client = Client::new("", "").expect("could not authenticate with hac");
 
     print_cumulative_gpa(&client)?;
 

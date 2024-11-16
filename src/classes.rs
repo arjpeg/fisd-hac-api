@@ -57,9 +57,11 @@ pub fn get_quarter_grades(client: &Client, quarter: u8) -> Result<Transcript> {
             continue;
         };
 
+        let grade = grade.round();
+
         if grade != 0.0 {
             if title.contains("Computer Science A") {
-                grades.push(TranscriptEntry::new(format!("{title}_duplicate"), grade));
+                // grades.push(TranscriptEntry::new(title.clone(), grade));
             }
 
             grades.push(TranscriptEntry::new(title, grade));
