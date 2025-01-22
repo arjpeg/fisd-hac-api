@@ -43,7 +43,7 @@ fn print_cumulative_gpa(client: &Client) -> Result<()> {
         transcripts.push(quarter_grades);
     }
 
-    let cumulative_transcript = Transcript::combine(&transcripts, MergeStrategy::Seperate);
+    let cumulative_transcript = Transcript::combine(&transcripts, MergeStrategy::Average);
 
     println!(
         "Cumulative GPA with {} total entries: {}",

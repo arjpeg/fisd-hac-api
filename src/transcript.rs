@@ -66,6 +66,7 @@ impl Transcript {
             .into_iter()
             .map(|(k, v)| {
                 let average = v.iter().map(|e| e.grade).sum::<f32>() / v.len() as f32;
+                let average = average.round();
 
                 TranscriptEntry {
                     name: k,
@@ -175,7 +176,7 @@ mod tests {
             },
         ];
 
-        let mut entries = Transcript::combine(&transcripts).entries;
+        let mut entries = Transcript::combine(&transcripts, MergeStrategy::Average).entries;
         entries.sort_by_key(|e| e.name.clone());
 
         assert_eq!(
@@ -184,6 +185,30 @@ mod tests {
                 TranscriptEntry {
                     name: "Class A".to_owned(),
                     grade: 95.0,
+                    weightage: 5.5,
+                },
+                TranscriptEntry {
+                    name: "Class B".to_owned(),
+                    grade: 100.0,
+                    weightage: 5.0,
+                },
+            ]
+        );
+
+        let mut entries = Transcript::combine(&transcripts, MergeStrategy::Seperate).entries;
+        entries.sort_by_key(|e| e.name.clone());
+
+        assert_eq!(
+            entries,
+            vec![
+                TranscriptEntry {
+                    name: "Class A".to_owned(),
+                    grade: 90.0,
+                    weightage: 5.5,
+                },
+                TranscriptEntry {
+                    name: "Class A".to_owned(),
+                    grade: 100.0,
                     weightage: 5.5,
                 },
                 TranscriptEntry {
