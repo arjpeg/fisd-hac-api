@@ -22,7 +22,7 @@ fn print_cumulative_gpa(client: &Client) -> Result<()> {
     println!("Getting last posted transcript");
     let posted_transcript = client.get_transcript().expect("could not get transcript");
 
-    println!("  posted transcript gpa: {}", posted_transcript.gpa());
+    println!("\tposted transcript gpa: {}", posted_transcript.gpa());
 
     transcripts.push(posted_transcript);
 
@@ -34,11 +34,11 @@ fn print_cumulative_gpa(client: &Client) -> Result<()> {
             .expect("could not get quarter grades");
 
         if quarter_grades.entries.is_empty() {
-            println!("  no grades found for quarter... stopping now");
+            println!("\tno grades found for quarter... stopping now");
             break;
         }
 
-        println!("  quarter gpa: {}", quarter_grades.gpa());
+        println!("\tquarter gpa: {}", quarter_grades.gpa());
 
         transcripts.push(quarter_grades);
     }
@@ -55,7 +55,7 @@ fn print_cumulative_gpa(client: &Client) -> Result<()> {
 }
 
 fn main() -> Result<()> {
-    let client = Client::new("", "").expect("could not authenticate with hac");
+    let client = Client::new("257638", "03162003").expect("could not authenticate with hac");
 
     print_cumulative_gpa(&client)?;
 

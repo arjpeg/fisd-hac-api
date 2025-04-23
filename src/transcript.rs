@@ -135,8 +135,10 @@ pub fn get_transcript(client: &Client) -> Result<Transcript> {
 
                 Ok(TranscriptEntry::new(name, grade))
             })
-            .filter_map(|entry: Result<TranscriptEntry>| entry.ok())
+            .filter_map(Result::ok)
             .collect::<Vec<_>>();
+
+        dbg!(&year_entries);
 
         cumulative_entries.extend(year_entries);
     }
